@@ -3,6 +3,7 @@
 int main(void)
 {
     Serial.begin(115200);
+    GPIO_Open()
 
     while(1)
     {
@@ -14,8 +15,6 @@ int main(void)
 }
 
 
-
-
 void setup() 
 {
     main();
@@ -24,4 +23,9 @@ void setup()
 void loop() 
 {
     delay(1000);
+}
+
+void GPIO_Open()
+{
+
 }
