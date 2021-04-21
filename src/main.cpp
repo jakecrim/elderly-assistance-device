@@ -2,18 +2,25 @@
 
 /* DEFINES */
 #define HELP_BUTTON 23
+//ultrasonic sensor 1
+#define trigPin1 4
+#define echoPin1 5
 
 /* DECLARATIONS */
-void GPIO_Open(void);
+void GPIO_Open();
+void getDistance();
 
 /* GLOBALS */
 bool helpPressed = false;
 
+long duration1; // for the duration of the wave travel
+int distance1; // for the distance measurement
 
 int main(void)
 {
     Serial.begin(115200);
     GPIO_Open();
+
 
 
     while(1)
@@ -24,6 +31,10 @@ int main(void)
             printf("Help Button Pressed \n");
             helpPressed = false; 
         }
+        getDistance();
+        Serial.print("distance 1: ");
+        Serial.print(distance1);
+        Serial.print("\n");
         delay(1000);
     }
 
@@ -33,12 +44,6 @@ int main(void)
 void IRAM_ATTR HELP_ISR()
 {
     helpPressed = true;
-}
-
-void GPIO_Open()
-{
-    pinMode(HELP_BUTTON, INPUT_PULLUP);
-    attachInterrupt(HELP_BUTTON, HELP_ISR, FALLING);
 }
 
 void setup() 
@@ -51,38 +56,25 @@ void loop()
     delay(1000);
 }
 
-// struct Button {
-//   const uint8_t PIN;
-//   uint32_t numberKeyPresses;
-//   bool pressed;
-// };
+void GPIO_Open()
+{
+    pinMode(HELP_BUTTON, INPUT_PULLUP);
+    attachInterrupt(HELP_BUTTON, HELP_ISR, FALLING);
 
-// Button button1 = {23, 0, false};
+    pinMode(trigPin1, OUTPUT);
+    pinMode(echoPin1, INPUT);
+}
 
-// void IRAM_ATTR HELP_ISR() {
-//   button1.numberKeyPresses += 1;
-//   button1.pressed = true;
-// }
-
-// void setup() {
-//   Serial.begin(115200);
-//   pinMode(button1.PIN, INPUT_PULLUP);
-//   attachInterrupt(button1.PIN, HELP_ISR, FALLING);
-// }
-
-// void loop() {
-//   if (button1.pressed) {
-//       Serial.printf("Button 1 has been pressed %u times\n", button1.numberKeyPresses);
-//       button1.pressed = false;
-//   }
-//   printf("In loop \n");
-
-//   //Detach Interrupt after 1 Minute
-//   static uint32_t lastMillis = 0;
-//   if (millis() - lastMillis > 60000) {
-//     lastMillis = millis();
-//     detachInterrupt(button1.PIN);
-// 	Serial.println("Interrupt Detached!");
-//   }
-//   delay(1000);
-// }
+void getDistance()
+{
+    digitalWrite(trigPin1, LOW);
+    delayMicroseconds(2);
+    // set the trigPin1 high for 10 ms
+    digitalWrite(trigPin1, HIGH);
+    delayMicroseconds(100);
+    digitalWrite(trigPin1, LOW);
+    // Reads the echoPin, returns the sound wave travel time in ms
+    duration1 = pulseIn(echoPin1, HIGH);
+    // calculating the distance
+    distance1 = duration1 * 0.034 / 2; //speed of sound wave divided by 2
+}
