@@ -5,11 +5,15 @@
 #define HELP_BUTTON 23
 //ultrasonic sensor 1
 #define trigPin1 4
-#define echoPin1 5
+#define echoPin1 16
+
+//ultrasonic sensor 2
+#define trigPin2 18
+#define echoPin2 5
 
 /* DECLARATIONS */
 void GPIO_Open(void);
-void getDistance(void);
+void getDistance(int);
 void wirelessOpen(void);
 
 /* GLOBALS */
@@ -21,31 +25,34 @@ char pass[] = "Kaiser99";
 // auth token for blynk servers
 char auth[] = "6aW_cmjPMMIvBDqwQ20cJh3kkwYCj-7y";
 
-
 long duration1; // for the duration of the wave travel
+long duration2;
 int distance1; // for the distance measurement
+int distance2;
 
 int main(void)
 {
     Serial.begin(115200);
     GPIO_Open();
-    wirelessOpen();
-
-
+    //wirelessOpen();
 
     while(1)
     {
-        printf("Test: \n");
-        Blynk.run();
+        //printf("Test: \n");
+        //Blynk.run();
 
         if(helpPressed)
         {
             printf("Help Button Pressed \n");
             helpPressed = false; 
         }
-        getDistance();
+        getDistance(1);
+        getDistance(2);
         Serial.print("distance 1: ");
         Serial.print(distance1);
+        Serial.print("\n");
+        Serial.print("distance 2: ");
+        Serial.print(distance2);
         Serial.print("\n");
         delay(1000);
     }
@@ -93,20 +100,45 @@ void GPIO_Open()
 
     pinMode(trigPin1, OUTPUT);
     pinMode(echoPin1, INPUT);
+    pinMode(trigPin2, OUTPUT);
+    pinMode(echoPin2, INPUT);
 }
 
-void getDistance()
+void getDistance(int ultrasonic)
 {
-    digitalWrite(trigPin1, LOW);
-    delayMicroseconds(2);
-    // set the trigPin1 high for 10 ms
-    digitalWrite(trigPin1, HIGH);
-    delayMicroseconds(100);
-    digitalWrite(trigPin1, LOW);
-    // Reads the echoPin, returns the sound wave travel time in ms
-    duration1 = pulseIn(echoPin1, HIGH);
-    // calculating the distance
-    distance1 = duration1 * 0.034 / 2; //speed of sound wave divided by 2
+    if(ultrasonic == 1)
+    {
+        digitalWrite(trigPin1, LOW);
+        delayMicroseconds(2);
+        // set the trigPin high for 10 ms
+        digitalWrite(trigPin1, HIGH);
+        
+        delayMicroseconds(100);
+        digitalWrite(trigPin1, LOW);
+        
+        // Reads the echoPins, returns the sound wave travel time in ms
+        duration1 = pulseIn(echoPin1, HIGH);
+        
+        // calculating the distance
+        distance1 = duration1 * 0.034 / 2; //speed of sound wave divided by 2
+        
+    }
+    if(ultrasonic == 2)
+    {
+        digitalWrite(trigPin2, LOW);
+        delayMicroseconds(2);
+        // set the trigPin high for 10 ms
+        digitalWrite(trigPin2, HIGH);
+
+        delayMicroseconds(100);
+        digitalWrite(trigPin2, LOW);
+
+        // Reads the echoPins, returns the sound wave travel time in ms
+        duration2 = pulseIn(echoPin2, HIGH);
+
+        // calculating the distance
+        distance2 = duration2 * 0.034 / 2; //speed of sound wave divided by 2
+    }
 }
 
 void setup() 
