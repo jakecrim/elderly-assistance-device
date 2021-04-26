@@ -12,6 +12,8 @@
 void GPIO_Open(void);
 void getDistance(void);
 void wirelessOpen(void);
+void vibrateSignal(int);
+
 
 /* GLOBALS */
 bool helpPressed = false;
@@ -31,15 +33,18 @@ int distance1; // for the distance measurement
 int main(void)
 {
     Serial.begin(115200);
+
+    int testDistance = 35;
+
     GPIO_Open();
-    wirelessOpen();
+    // wirelessOpen();
 
 
 
     while(1)
     {
         printf("Test: \n");
-        Blynk.run();
+        // Blynk.run();
 
         if(helpPressed)
         {
@@ -51,17 +56,81 @@ int main(void)
         Serial.print("distance 1: ");
         Serial.print(distance1);
         Serial.print("\n");
-        
-        digitalWrite(TRANSISTOR_PIN, HIGH);
-        delay(1000);
-        digitalWrite(TRANSISTOR_PIN, LOW);
-        delay(1000);
+
+        Serial.println(testDistance);
+        vibrateSignal(testDistance);
+        testDistance--;
+
+        delay(100);
         // helpPressed = true;
     }
 
     return 0;
 }
 
+void vibrateSignal(int distance)
+{
+    if(distance >= 30)
+    {
+        digitalWrite(TRANSISTOR_PIN, HIGH);
+        delay(1000);
+        digitalWrite(TRANSISTOR_PIN, LOW);
+        delay(1000);
+        digitalWrite(TRANSISTOR_PIN, HIGH);
+        delay(1000);
+        digitalWrite(TRANSISTOR_PIN, LOW);
+        delay(1000);
+        digitalWrite(TRANSISTOR_PIN, HIGH);
+        delay(1000);
+        digitalWrite(TRANSISTOR_PIN, LOW);
+        delay(1000);
+    }
+    else if(15 <= distance || distance < 30)
+    {
+        digitalWrite(TRANSISTOR_PIN, HIGH);
+        delay(500);
+        digitalWrite(TRANSISTOR_PIN, LOW);
+        delay(500);
+        digitalWrite(TRANSISTOR_PIN, HIGH);
+        delay(500);
+        digitalWrite(TRANSISTOR_PIN, LOW);
+        delay(500);
+        digitalWrite(TRANSISTOR_PIN, HIGH);
+        delay(500);
+        digitalWrite(TRANSISTOR_PIN, LOW);
+        delay(500);
+    }
+    else if(10 <= distance || distance < 15)
+    {
+        digitalWrite(TRANSISTOR_PIN, HIGH);
+        delay(250);
+        digitalWrite(TRANSISTOR_PIN, LOW);
+        delay(250);
+        digitalWrite(TRANSISTOR_PIN, HIGH);
+        delay(250);
+        digitalWrite(TRANSISTOR_PIN, LOW);
+        delay(250);
+        digitalWrite(TRANSISTOR_PIN, HIGH);
+        delay(250);
+        digitalWrite(TRANSISTOR_PIN, LOW);
+        delay(250);
+    }
+    else if(5 <= distance || distance < 10)
+    {
+        digitalWrite(TRANSISTOR_PIN, HIGH);
+        delay(100);
+        digitalWrite(TRANSISTOR_PIN, LOW);
+        delay(100);
+        digitalWrite(TRANSISTOR_PIN, HIGH);
+        delay(100);
+        digitalWrite(TRANSISTOR_PIN, LOW);
+        delay(100);
+        digitalWrite(TRANSISTOR_PIN, HIGH);
+        delay(100);
+        digitalWrite(TRANSISTOR_PIN, LOW);
+        delay(100);
+    }
+}
 
 void IRAM_ATTR HELP_ISR()
 {
