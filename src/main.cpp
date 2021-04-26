@@ -3,6 +3,7 @@
 
 /* DEFINES */
 #define HELP_BUTTON 23
+#define TRANSISTOR_PIN 2
 //ultrasonic sensor 1
 #define trigPin1 4
 #define echoPin1 16
@@ -15,13 +16,17 @@
 void GPIO_Open(void);
 void getDistance(int);
 void wirelessOpen(void);
+void vibrateSignal(int);
+
 
 /* GLOBALS */
 bool helpPressed = false;
 
 // Wi-Fi
-char ssid[] = "Choma 5G";
-char pass[] = "Kaiser99";
+// char ssid[] = "Choma 5G";
+// char pass[] = "Kaiser99";
+char ssid[] = "jakey";
+char pass[] = "12345678";
 // auth token for blynk servers
 char auth[] = "6aW_cmjPMMIvBDqwQ20cJh3kkwYCj-7y";
 
@@ -33,33 +38,121 @@ int distance2;
 int main(void)
 {
     Serial.begin(115200);
+
+    int testDistance = 35;
+
     GPIO_Open();
+<<<<<<< HEAD
     //wirelessOpen();
 
     while(1)
     {
         //printf("Test: \n");
         //Blynk.run();
+=======
+    // wirelessOpen();
+
+
+
+    while(1)
+    {
+        printf("Test: \n");
+        // Blynk.run();
+>>>>>>> 0f7d246117a54b37639231a17045cf592a74cc5a
 
         if(helpPressed)
         {
             printf("Help Button Pressed \n");
             helpPressed = false; 
+            Blynk.notify("EMERGENCY BUTTON PRESSED");
         }
         getDistance(1);
         getDistance(2);
         Serial.print("distance 1: ");
         Serial.print(distance1);
         Serial.print("\n");
+<<<<<<< HEAD
         Serial.print("distance 2: ");
         Serial.print(distance2);
         Serial.print("\n");
         delay(1000);
+=======
+
+        Serial.println(testDistance);
+        vibrateSignal(testDistance);
+        testDistance--;
+
+        delay(100);
+        // helpPressed = true;
+>>>>>>> 0f7d246117a54b37639231a17045cf592a74cc5a
     }
 
     return 0;
 }
 
+void vibrateSignal(int distance)
+{
+    if(distance >= 30)
+    {
+        digitalWrite(TRANSISTOR_PIN, HIGH);
+        delay(1000);
+        digitalWrite(TRANSISTOR_PIN, LOW);
+        delay(1000);
+        digitalWrite(TRANSISTOR_PIN, HIGH);
+        delay(1000);
+        digitalWrite(TRANSISTOR_PIN, LOW);
+        delay(1000);
+        digitalWrite(TRANSISTOR_PIN, HIGH);
+        delay(1000);
+        digitalWrite(TRANSISTOR_PIN, LOW);
+        delay(1000);
+    }
+    else if(15 <= distance || distance < 30)
+    {
+        digitalWrite(TRANSISTOR_PIN, HIGH);
+        delay(500);
+        digitalWrite(TRANSISTOR_PIN, LOW);
+        delay(500);
+        digitalWrite(TRANSISTOR_PIN, HIGH);
+        delay(500);
+        digitalWrite(TRANSISTOR_PIN, LOW);
+        delay(500);
+        digitalWrite(TRANSISTOR_PIN, HIGH);
+        delay(500);
+        digitalWrite(TRANSISTOR_PIN, LOW);
+        delay(500);
+    }
+    else if(10 <= distance || distance < 15)
+    {
+        digitalWrite(TRANSISTOR_PIN, HIGH);
+        delay(250);
+        digitalWrite(TRANSISTOR_PIN, LOW);
+        delay(250);
+        digitalWrite(TRANSISTOR_PIN, HIGH);
+        delay(250);
+        digitalWrite(TRANSISTOR_PIN, LOW);
+        delay(250);
+        digitalWrite(TRANSISTOR_PIN, HIGH);
+        delay(250);
+        digitalWrite(TRANSISTOR_PIN, LOW);
+        delay(250);
+    }
+    else if(5 <= distance || distance < 10)
+    {
+        digitalWrite(TRANSISTOR_PIN, HIGH);
+        delay(100);
+        digitalWrite(TRANSISTOR_PIN, LOW);
+        delay(100);
+        digitalWrite(TRANSISTOR_PIN, HIGH);
+        delay(100);
+        digitalWrite(TRANSISTOR_PIN, LOW);
+        delay(100);
+        digitalWrite(TRANSISTOR_PIN, HIGH);
+        delay(100);
+        digitalWrite(TRANSISTOR_PIN, LOW);
+        delay(100);
+    }
+}
 
 void IRAM_ATTR HELP_ISR()
 {
@@ -97,6 +190,8 @@ void GPIO_Open()
 {
     pinMode(HELP_BUTTON, INPUT_PULLUP);
     attachInterrupt(HELP_BUTTON, HELP_ISR, FALLING);
+
+    pinMode(TRANSISTOR_PIN, OUTPUT);
 
     pinMode(trigPin1, OUTPUT);
     pinMode(echoPin1, INPUT);
