@@ -2,6 +2,7 @@
 
 /* DEFINES */
 #define HELP_BUTTON 23
+#define TRANSISTOR_PIN 2
 //ultrasonic sensor 1
 #define trigPin1 4
 #define echoPin1 5
@@ -35,6 +36,9 @@ int main(void)
         Serial.print("distance 1: ");
         Serial.print(distance1);
         Serial.print("\n");
+        digitalWrite(TRANSISTOR_PIN, HIGH);
+        delay(1000);
+        digitalWrite(TRANSISTOR_PIN, LOW);
         delay(1000);
     }
 
@@ -60,6 +64,8 @@ void GPIO_Open()
 {
     pinMode(HELP_BUTTON, INPUT_PULLUP);
     attachInterrupt(HELP_BUTTON, HELP_ISR, FALLING);
+
+    pinMode(TRANSISTOR_PIN, OUTPUT);
 
     pinMode(trigPin1, OUTPUT);
     pinMode(echoPin1, INPUT);
