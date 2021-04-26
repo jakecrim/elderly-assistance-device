@@ -17,8 +17,10 @@ void wirelessOpen(void);
 bool helpPressed = false;
 
 // Wi-Fi
-char ssid[] = "Choma 5G";
-char pass[] = "Kaiser99";
+// char ssid[] = "Choma 5G";
+// char pass[] = "Kaiser99";
+char ssid[] = "jakey";
+char pass[] = "12345678";
 // auth token for blynk servers
 char auth[] = "6aW_cmjPMMIvBDqwQ20cJh3kkwYCj-7y";
 
@@ -43,15 +45,18 @@ int main(void)
         {
             printf("Help Button Pressed \n");
             helpPressed = false; 
+            Blynk.notify("EMERGENCY BUTTON PRESSED");
         }
         getDistance();
         Serial.print("distance 1: ");
         Serial.print(distance1);
         Serial.print("\n");
+        
         digitalWrite(TRANSISTOR_PIN, HIGH);
         delay(1000);
         digitalWrite(TRANSISTOR_PIN, LOW);
         delay(1000);
+        // helpPressed = true;
     }
 
     return 0;
