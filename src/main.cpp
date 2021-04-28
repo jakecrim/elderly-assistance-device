@@ -42,14 +42,6 @@ int main(void)
     int testDistance = 35;
 
     GPIO_Open();
-<<<<<<< HEAD
-    //wirelessOpen();
-
-    while(1)
-    {
-        //printf("Test: \n");
-        //Blynk.run();
-=======
     // wirelessOpen();
 
 
@@ -58,7 +50,6 @@ int main(void)
     {
         printf("Test: \n");
         // Blynk.run();
->>>>>>> 0f7d246117a54b37639231a17045cf592a74cc5a
 
         if(helpPressed)
         {
@@ -71,12 +62,10 @@ int main(void)
         Serial.print("distance 1: ");
         Serial.print(distance1);
         Serial.print("\n");
-<<<<<<< HEAD
         Serial.print("distance 2: ");
         Serial.print(distance2);
         Serial.print("\n");
         delay(1000);
-=======
 
         Serial.println(testDistance);
         vibrateSignal(testDistance);
@@ -84,7 +73,6 @@ int main(void)
 
         delay(100);
         // helpPressed = true;
->>>>>>> 0f7d246117a54b37639231a17045cf592a74cc5a
     }
 
     return 0;
