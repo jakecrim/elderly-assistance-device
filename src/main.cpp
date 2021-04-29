@@ -12,11 +12,16 @@
 #define trigPin2 18
 #define echoPin2 5
 
+#define DISTANCE_CHECK_STACK_SIZE 1000
+#define DISTANCE_CHECK_PRIORITY 4
+
 /* DECLARATIONS */
 void GPIO_Open(void);
 void getDistance(int);
 void wirelessOpen(void);
 void vibrateSignal(int);
+void tasksOpen(void);
+void vDistanceCheck(void * parameter);
 
 
 /* GLOBALS */
@@ -44,6 +49,7 @@ int main(void)
     GPIO_Open();
     // wirelessOpen();
 
+    tasksOpen();
 
 
     while(1)
@@ -65,18 +71,35 @@ int main(void)
         Serial.print("distance 2: ");
         Serial.print(distance2);
         Serial.print("\n");
-        delay(1000);
+        // delay(1000);
 
         Serial.println(testDistance);
-        vibrateSignal(testDistance);
+        // vibrateSignal(testDistance);
         testDistance--;
 
-        delay(100);
+        delay(200);
         // helpPressed = true;
     }
 
     return 0;
 }
+
+void tasksOpen()
+{
+    printf("Opening FreeRTOS Tasks: \n");
+    
+    xTaskCreate(vDistanceCheck, "Distance Check", DISTANCE_CHECK_STACK_SIZE, NULL, DISTANCE_CHECK_PRIORITY, NULL); 
+}
+
+void vDistanceCheck(void * parameter)
+{
+    for(;;)
+    {
+        printf("Inside Distance Task \n");
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
+    }
+}
+
 
 void vibrateSignal(int distance)
 {
