@@ -35,8 +35,6 @@ char pass[] = "12345678";
 // auth token for blynk servers
 char auth[] = "6aW_cmjPMMIvBDqwQ20cJh3kkwYCj-7y";
 
-long duration1; // for the duration of the wave travel
-long duration2;
 int distance1; // for the distance measurement
 int distance2;
 
@@ -103,66 +101,35 @@ void vDistanceCheck(void * parameter)
 
 void vibrateSignal(int distance)
 {
-    if(distance >= 30)
-    {
-        digitalWrite(TRANSISTOR_PIN, HIGH);
-        delay(1000);
-        digitalWrite(TRANSISTOR_PIN, LOW);
-        delay(1000);
-        digitalWrite(TRANSISTOR_PIN, HIGH);
-        delay(1000);
-        digitalWrite(TRANSISTOR_PIN, LOW);
-        delay(1000);
-        digitalWrite(TRANSISTOR_PIN, HIGH);
-        delay(1000);
-        digitalWrite(TRANSISTOR_PIN, LOW);
-        delay(1000);
-    }
-    else if(15 <= distance || distance < 30)
+    if(distance >= 170)
     {
         digitalWrite(TRANSISTOR_PIN, HIGH);
         delay(500);
         digitalWrite(TRANSISTOR_PIN, LOW);
         delay(500);
-        digitalWrite(TRANSISTOR_PIN, HIGH);
-        delay(500);
-        digitalWrite(TRANSISTOR_PIN, LOW);
-        delay(500);
-        digitalWrite(TRANSISTOR_PIN, HIGH);
-        delay(500);
-        digitalWrite(TRANSISTOR_PIN, LOW);
-        delay(500);
     }
-    else if(10 <= distance || distance < 15)
+    else if(100 <= distance || distance < 170)
     {
         digitalWrite(TRANSISTOR_PIN, HIGH);
-        delay(250);
+        delay(300);
         digitalWrite(TRANSISTOR_PIN, LOW);
-        delay(250);
-        digitalWrite(TRANSISTOR_PIN, HIGH);
-        delay(250);
-        digitalWrite(TRANSISTOR_PIN, LOW);
-        delay(250);
-        digitalWrite(TRANSISTOR_PIN, HIGH);
-        delay(250);
-        digitalWrite(TRANSISTOR_PIN, LOW);
-        delay(250);
+        delay(300);
     }
-    else if(5 <= distance || distance < 10)
+    else if(50 <= distance || distance < 100)
     {
         digitalWrite(TRANSISTOR_PIN, HIGH);
-        delay(100);
+        delay(150);
         digitalWrite(TRANSISTOR_PIN, LOW);
-        delay(100);
-        digitalWrite(TRANSISTOR_PIN, HIGH);
-        delay(100);
-        digitalWrite(TRANSISTOR_PIN, LOW);
-        delay(100);
-        digitalWrite(TRANSISTOR_PIN, HIGH);
-        delay(100);
-        digitalWrite(TRANSISTOR_PIN, LOW);
-        delay(100);
+        delay(150);
     }
+    else if(0 <= distance || distance < 50)
+    {
+        digitalWrite(TRANSISTOR_PIN, HIGH);
+        delay(75);
+        digitalWrite(TRANSISTOR_PIN, LOW);
+        delay(75);
+    }
+
 }
 
 void IRAM_ATTR HELP_ISR()
@@ -212,11 +179,14 @@ void GPIO_Open()
 
 void getDistance(int ultrasonic)
 {
+    long duration1; // for the duration of the wave travel
+    long duration2;
+
     if(ultrasonic == 1)
     {
         digitalWrite(trigPin1, LOW);
         delayMicroseconds(2);
-        // set the trigPin high for 10 ms
+        // set the trigPin high for 100 ms
         digitalWrite(trigPin1, HIGH);
         
         delayMicroseconds(100);
