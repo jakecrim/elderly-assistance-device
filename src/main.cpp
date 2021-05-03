@@ -61,21 +61,14 @@ int main(void)
             helpPressed = false; 
             Blynk.notify("EMERGENCY BUTTON PRESSED");
         }
-        getDistance(1);
-        getDistance(2);
-        Serial.print("distance 1: ");
-        Serial.print(distance1);
-        Serial.print("\n");
-        Serial.print("distance 2: ");
-        Serial.print(distance2);
-        Serial.print("\n");
+        
         // delay(1000);
 
         Serial.println(testDistance);
         // vibrateSignal(testDistance);
         testDistance--;
 
-        delay(200);
+        
         // helpPressed = true;
     }
 
@@ -95,6 +88,15 @@ void vDistanceCheck(void * parameter)
     {
         printf("Inside Distance Task \n");
         vTaskDelay(1000 / portTICK_PERIOD_MS);
+        getDistance(1);
+        getDistance(2);
+        Serial.print("distance 1: ");
+        Serial.print(distance1);
+        Serial.print("\n");
+        Serial.print("distance 2: ");
+        Serial.print(distance2);
+        Serial.print("\n");
+        delay(200);
     }
 }
 
