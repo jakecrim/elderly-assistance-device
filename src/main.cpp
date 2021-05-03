@@ -3,7 +3,9 @@
 
 /* DEFINES */
 #define HELP_BUTTON 23
-#define TRANSISTOR_PIN 2
+#define VIBRATE_PIN_1 2
+#define VIBRATE_PIN_2 22
+
 //ultrasonic sensor 1
 #define trigPin1 4
 #define echoPin1 16
@@ -22,6 +24,7 @@ void wirelessOpen(void);
 void vibrateSignal(int);
 void tasksOpen(void);
 void vDistanceCheck(void * parameter);
+void vVibrate2(void * parameter);
 
 
 /* GLOBALS */
@@ -42,17 +45,16 @@ int main(void)
 {
     Serial.begin(115200);
 
-    int testDistance = 35;
-
     GPIO_Open();
     // wirelessOpen();
+
 
     tasksOpen();
 
 
     while(1)
     {
-        printf("Test: \n");
+        // printf("Test: \n");
         // Blynk.run();
 
         if(helpPressed)
@@ -64,11 +66,9 @@ int main(void)
         
         // delay(1000);
 
-        Serial.println(testDistance);
-        // vibrateSignal(testDistance);
-        testDistance--;
+        vibrateSignal(10);
 
-        
+       delay(10); 
         // helpPressed = true;
     }
 
@@ -80,56 +80,102 @@ void tasksOpen()
     printf("Opening FreeRTOS Tasks: \n");
     
     xTaskCreate(vDistanceCheck, "Distance Check", DISTANCE_CHECK_STACK_SIZE, NULL, DISTANCE_CHECK_PRIORITY, NULL); 
+    xTaskCreate(vVibrate2, "Vibrate 2", DISTANCE_CHECK_STACK_SIZE, NULL, DISTANCE_CHECK_PRIORITY, NULL); 
 }
 
 void vDistanceCheck(void * parameter)
 {
     for(;;)
     {
-        printf("Inside Distance Task \n");
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
+        vTaskDelay(250 / portTICK_PERIOD_MS);
         getDistance(1);
         getDistance(2);
-        Serial.print("distance 1: ");
-        Serial.print(distance1);
-        Serial.print("\n");
-        Serial.print("distance 2: ");
-        Serial.print(distance2);
-        Serial.print("\n");
-        delay(200);
+        // Serial.print("distance 1: ");
+        // Serial.println(distance1);
+        // Serial.print("\n");
+        // Serial.print("distance 2: ");
+        // Serial.print(distance2);
+        // Serial.print("\n");
     }
 }
 
+void vVibrate2(void * parameter)
+{
+    for(;;)
+    {
+        if(distance2 >= 130)
+        {
+            digitalWrite(VIBRATE_PIN_2, HIGH);
+            delay(150);
+            digitalWrite(VIBRATE_PIN_2, LOW);
+            delay(1000);
+        }
+        else if(90 <= distance2 && distance2 < 130)
+        {
+            digitalWrite(VIBRATE_PIN_2, HIGH);
+            delay(500);
+            digitalWrite(VIBRATE_PIN_2, LOW);
+            delay(500);
+        }
+        else if(50 <= distance2 && distance2 < 90)
+        {
+            digitalWrite(VIBRATE_PIN_2, HIGH);
+            delay(250);
+            digitalWrite(VIBRATE_PIN_2, LOW);
+            delay(250);
+        }
+        else if(0 <= distance2 && distance2 < 50)
+        {
+            Serial.println("Smallest Distance Option");
+            digitalWrite(VIBRATE_PIN_2, HIGH);
+            delay(100);
+            digitalWrite(VIBRATE_PIN_2, LOW);
+            delay(100);
+        }
+        else
+        {
+            digitalWrite(VIBRATE_PIN_2, LOW);
+            delay(1000);
+        }
+    }
+
+}
 
 void vibrateSignal(int distance)
 {
-    if(distance >= 170)
+    if(distance1 >= 130)
     {
-        digitalWrite(TRANSISTOR_PIN, HIGH);
-        delay(500);
-        digitalWrite(TRANSISTOR_PIN, LOW);
-        delay(500);
-    }
-    else if(100 <= distance || distance < 170)
-    {
-        digitalWrite(TRANSISTOR_PIN, HIGH);
-        delay(300);
-        digitalWrite(TRANSISTOR_PIN, LOW);
-        delay(300);
-    }
-    else if(50 <= distance || distance < 100)
-    {
-        digitalWrite(TRANSISTOR_PIN, HIGH);
+        digitalWrite(VIBRATE_PIN_1, HIGH);
         delay(150);
-        digitalWrite(TRANSISTOR_PIN, LOW);
-        delay(150);
+        digitalWrite(VIBRATE_PIN_1, LOW);
+        delay(1000);
     }
-    else if(0 <= distance || distance < 50)
+    else if(90 <= distance1 && distance1 < 130)
     {
-        digitalWrite(TRANSISTOR_PIN, HIGH);
-        delay(75);
-        digitalWrite(TRANSISTOR_PIN, LOW);
-        delay(75);
+        digitalWrite(VIBRATE_PIN_1, HIGH);
+        delay(500);
+        digitalWrite(VIBRATE_PIN_1, LOW);
+        delay(500);
+    }
+    else if(50 <= distance1 && distance1 < 90)
+    {
+        digitalWrite(VIBRATE_PIN_1, HIGH);
+        delay(250);
+        digitalWrite(VIBRATE_PIN_1, LOW);
+        delay(250);
+    }
+    else if(0 <= distance1 && distance1 < 50)
+    {
+        Serial.println("Smallest Distance Option");
+        digitalWrite(VIBRATE_PIN_1, HIGH);
+        delay(100);
+        digitalWrite(VIBRATE_PIN_1, LOW);
+        delay(100);
+    }
+    else
+    {
+        digitalWrite(VIBRATE_PIN_1, LOW);
+        delay(1000);
     }
 
 }
@@ -171,7 +217,8 @@ void GPIO_Open()
     pinMode(HELP_BUTTON, INPUT_PULLUP);
     attachInterrupt(HELP_BUTTON, HELP_ISR, FALLING);
 
-    pinMode(TRANSISTOR_PIN, OUTPUT);
+    pinMode(VIBRATE_PIN_2, OUTPUT);
+    pinMode(VIBRATE_PIN_1, OUTPUT);
 
     pinMode(trigPin1, OUTPUT);
     pinMode(echoPin1, INPUT);
@@ -188,10 +235,10 @@ void getDistance(int ultrasonic)
     {
         digitalWrite(trigPin1, LOW);
         delayMicroseconds(2);
-        // set the trigPin high for 100 ms
+        // set the trigPin high for 10 uS
         digitalWrite(trigPin1, HIGH);
         
-        delayMicroseconds(100);
+        delayMicroseconds(10);
         digitalWrite(trigPin1, LOW);
         
         // Reads the echoPins, returns the sound wave travel time in ms
@@ -205,10 +252,10 @@ void getDistance(int ultrasonic)
     {
         digitalWrite(trigPin2, LOW);
         delayMicroseconds(2);
-        // set the trigPin high for 10 ms
+        // set the trigPin high for 10 uS
         digitalWrite(trigPin2, HIGH);
 
-        delayMicroseconds(100);
+        delayMicroseconds(10);
         digitalWrite(trigPin2, LOW);
 
         // Reads the echoPins, returns the sound wave travel time in ms
