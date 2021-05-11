@@ -46,7 +46,7 @@ int main(void)
     Serial.begin(115200);
 
     GPIO_Open();
-    // wirelessOpen();
+    wirelessOpen();
 
 
     tasksOpen();
@@ -55,7 +55,7 @@ int main(void)
     while(1)
     {
         // printf("Test: \n");
-        // Blynk.run();
+        Blynk.run();
 
         if(helpPressed)
         {
@@ -90,12 +90,12 @@ void vDistanceCheck(void * parameter)
         vTaskDelay(250 / portTICK_PERIOD_MS);
         getDistance(1);
         getDistance(2);
-        // Serial.print("distance 1: ");
-        // Serial.println(distance1);
-        // Serial.print("\n");
-        // Serial.print("distance 2: ");
-        // Serial.print(distance2);
-        // Serial.print("\n");
+        Serial.print("distance 1: ");
+        Serial.println(distance1);
+        Serial.print("\n");
+        Serial.print("distance 2: ");
+        Serial.print(distance2);
+        Serial.print("\n");
     }
 }
 
@@ -103,28 +103,29 @@ void vVibrate2(void * parameter)
 {
     for(;;)
     {
-        if(distance2 >= 130)
+        if(distance2 >= 140)
+        {
+            // digitalWrite(VIBRATE_PIN_2, HIGH);
+            // delay(150);
+            digitalWrite(VIBRATE_PIN_2, LOW);
+            // delay(1000);
+            delay(50);
+        }
+        else if(100 <= distance2 && distance2 < 140)
         {
             digitalWrite(VIBRATE_PIN_2, HIGH);
             delay(150);
             digitalWrite(VIBRATE_PIN_2, LOW);
-            delay(1000);
+            delay(750);
         }
-        else if(90 <= distance2 && distance2 < 130)
+        else if(45 <= distance2 && distance2 < 100)
         {
             digitalWrite(VIBRATE_PIN_2, HIGH);
-            delay(500);
+            delay(150);
             digitalWrite(VIBRATE_PIN_2, LOW);
-            delay(500);
+            delay(400);
         }
-        else if(50 <= distance2 && distance2 < 90)
-        {
-            digitalWrite(VIBRATE_PIN_2, HIGH);
-            delay(250);
-            digitalWrite(VIBRATE_PIN_2, LOW);
-            delay(250);
-        }
-        else if(0 <= distance2 && distance2 < 50)
+        else if(3 <= distance2 && distance2 < 45)
         {
             Serial.println("Smallest Distance Option");
             digitalWrite(VIBRATE_PIN_2, HIGH);
@@ -143,28 +144,29 @@ void vVibrate2(void * parameter)
 
 void vibrateSignal(int distance)
 {
-    if(distance1 >= 130)
+    if(distance1 >= 190)
+    {
+        // digitalWrite(VIBRATE_PIN_1, HIGH);
+        // delay(150);
+        digitalWrite(VIBRATE_PIN_1, LOW);
+        // delay(1000);
+        delay(50);
+    }
+    else if(105 <= distance2 && distance2 < 190)
     {
         digitalWrite(VIBRATE_PIN_1, HIGH);
         delay(150);
         digitalWrite(VIBRATE_PIN_1, LOW);
-        delay(1000);
+        delay(750);
     }
-    else if(90 <= distance1 && distance1 < 130)
+    else if(50 <= distance2 && distance2 < 105)
     {
         digitalWrite(VIBRATE_PIN_1, HIGH);
-        delay(500);
+        delay(150);
         digitalWrite(VIBRATE_PIN_1, LOW);
-        delay(500);
+        delay(400);
     }
-    else if(50 <= distance1 && distance1 < 90)
-    {
-        digitalWrite(VIBRATE_PIN_1, HIGH);
-        delay(250);
-        digitalWrite(VIBRATE_PIN_1, LOW);
-        delay(250);
-    }
-    else if(0 <= distance1 && distance1 < 50)
+    else if(3 <= distance1 && distance1 < 50)
     {
         Serial.println("Smallest Distance Option");
         digitalWrite(VIBRATE_PIN_1, HIGH);
